@@ -78,7 +78,7 @@ public class UserController {
 		//String nickname = service.getKakaoUserInfo(access_token);
 		//System.out.println("유저의 닉네임은 "+nickname);
 		//attr.addFlashAttribute("userNickname",nickname);
-		attr.addFlashAttribute("userInfo",map);
+		attr.addFlashAttribute("userInfo",map.get("userInfo"));
 		
 		//로그인에 성공하면 메인으로
 		return "redirect:/";
