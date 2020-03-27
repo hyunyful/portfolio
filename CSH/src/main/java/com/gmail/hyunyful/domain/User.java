@@ -10,7 +10,15 @@ public class User {
 	private Date birthday;
 	private String image;
 	private String type;
+	private int authority;
 	
+	
+	public int getAuthority() {
+		return authority;
+	}
+	public void setAuthority(int authority) {
+		this.authority = authority;
+	}
 	public String getId() {
 		return id;
 	}

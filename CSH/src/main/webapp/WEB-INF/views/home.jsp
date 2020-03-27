@@ -14,5 +14,6 @@
 <body>
 <a href="/user/join">회원가입</a><br/>
 <a href="/user/login">로그인</a>
+<h4>${userInfo}</h4>
 </body>
 </html>

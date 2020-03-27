@@ -13,7 +13,7 @@
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/> 
         <!-- 접속할 데이터베이스 경로 -->
         <property name="url" 
-        	value="jdbc:mysql://localhost:3306/portfolio?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;characterEncoding=utf-8"/>
+        	value="jdbc:mysql://localhost:3306/csh?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;characterEncoding=utf-8"/>
         <!-- 접속할 계정 이름과 비밀번호 -->
         <property name="username" value="sh"/> 
         <property name="password" value="sh1715"/>

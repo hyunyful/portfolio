@@ -21,4 +21,9 @@ public class UserDao {
 	public int join(User user) {
 		return sqlSession.insert("user.join",user);
 	}
+	
+	//일반 회원 로그인 처리
+	public User login(String id) {
+		return sqlSession.selectOne("user.login",id);
+	}
 }

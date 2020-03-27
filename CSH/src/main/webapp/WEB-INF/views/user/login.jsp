@@ -142,14 +142,23 @@ input[type=submit]:hover {
 </head>
 <body>
 <h2>로그인 페이지</h2>
-<div style="color:orange">
+
+<!-- 회원가입 성공 메세지 -->
+<div style="color:orange;text-align:center;margin:0 auto">
 <c:if test="${joinResult != null}">
-회원가입에 성공하셨습니다.
+회원가입에 성공하셨습니다.<br/>
 로그인을 진행해주세요.
 </c:if>
 </div>
+
+<!-- 로그인 실패 메세지 -->
+<div style="color:red;text-align:center;margin:0 auto">
+<c:if test="${loginResult != null}">
+로그인에 실패하셨습니다.<br/>
+다시 한번 시도해주세요.
+</c:if>
+</div>
 <div class="container">
-  <form action="/action_page.php">
     <div class="row">
       <h2 style="text-align:center">Login with Social Media or Manually</h2>
       <div class="vl">
@@ -157,9 +166,7 @@ input[type=submit]:hover {
       </div>
 
       <div class="col">
-        <a href="#" class="fb btn">
-          <i class="fa fa-facebook fa-fw"></i> Login with Facebook
-         </a>
+        <img src="../resources/image/kakao_login_btn.png" onClick="kakaologin()">
         <a href="#" class="twitter btn">
           <i class="fa fa-twitter fa-fw"></i> Login with Twitter
         </a>
@@ -167,19 +174,18 @@ input[type=submit]:hover {
           </i> Login with Google+
         </a>
       </div>
-
+	<form method="post">
       <div class="col">
         <div class="hide-md-lg">
           <p>Or sign in manually:</p>
-        </div>
+       </div>
 
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
+        <input type="text" name="id" placeholder="id" required>
+        <input type="password" name="pw" placeholder="Password" required>
         <input type="submit" value="Login">
       </div>
-      
+	</form>
     </div>
-  </form>
 </div>
 
 <div class="bottom-container">
@@ -188,10 +194,19 @@ input[type=submit]:hover {
       <a href="#" style="color:white" class="btn">Sign up</a>
     </div>
     <div class="col">
-      <a href="#" style="color:white" class="btn">Forgot password?</a>
+      <a href="/" style="color:white" class="btn">Go Main</a>
     </div>
   </div>
 </div>
+
+<script>
+function kakaologin(){
+	var uri = "https://kauth.kakao.com/oauth/authorize?";
+	uri += "client_id=a4145c3d7c70775e9b0ab558aee4ee92";
+	uri += "&redirect_uri=http://localhost:8080/user/kakaologin&response_type=code";
+	location.href=uri;
+}
+</script>
 
 </body>
 </html>

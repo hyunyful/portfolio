@@ -46,9 +46,11 @@
        <option value="<%=d %>"><%=d %></option>
        <%} %>
      </select>일<br/><br/><br/>
-     <input type="hidden" value="common" name="type" readOnly="readOnly" />
+     <input type="hidden" value="common" name="type" readOnly="readOnly" /><br/>
+     <input type="hidden" value="1" name="authority" readOnly="readOnly" />
      <button>회원가입</button>
-</form>
+</form><br/>
+	<button onClick="location.href='/'">메인으로</button>
 
 <script>
 //유효성 체크 변수

@@ -13,7 +13,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 회원가입 -->
 	<insert id="join" parameterType="User">
-		insert into user(id,pw,gender,birthday,image,type)
-		values(#{id},#{pw},#{gender},#{birthday},#{image},#{type})
+		insert into user(id,pw,gender,birthday,image,type,authority)
+		values(#{id},#{pw},#{gender},#{birthday},#{image},#{type},#{authority})
 	</insert>
+	
+	<!-- 일반 회원 로그인 -->
+	<select id="login" parameterType="java.lang.String" resultType="User">
+		select *
+		from user
+		where id=#{id}
+	</select>
 </mapper>

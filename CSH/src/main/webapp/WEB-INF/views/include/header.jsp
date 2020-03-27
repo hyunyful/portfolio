@@ -8,7 +8,11 @@
 /* Style the body */
 body {
   font-family: Arial;
-  margin: 0;
+  margin: 10px;
+}
+
+h{
+	text-align: center;
 }
 
 /* Header/Logo Title */
