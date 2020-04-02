@@ -12,9 +12,14 @@ public class UserDao {
 	@Autowired
 	private SqlSession sqlSession;
 	
-	//id 중복검사
-	public User idcheck(String id) {
-		return sqlSession.selectOne("user.idcheck",id);
+	//이메일 중복검사
+	public User emailcheck(String email) {
+		return sqlSession.selectOne("user.emailcheck",email);
+	}
+	
+	//닉네임 중복검사
+	public User nickname(String nickname) {
+		return sqlSession.selectOne("user.nicknamecheck",nickname);
 	}
 	
 	//회원가입
@@ -23,7 +28,12 @@ public class UserDao {
 	}
 	
 	//일반 회원 로그인 처리
-	public User login(String id) {
-		return sqlSession.selectOne("user.login",id);
+	public User login(String email) {
+		return sqlSession.selectOne("user.login",email);
+	}
+	
+	//sns로그인 시 회원정보가 있는지 확인
+	public User snsJoinCheck(String email) {
+		return sqlSession.selectOne("user.snsJoinCheck",email);
 	}
 }

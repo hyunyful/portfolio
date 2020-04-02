@@ -4,26 +4,18 @@ import java.util.Date;
 
 public class User {
 	
-	private String id;
+	private String email;
 	private String pw;
-	private String gender;
-	private Date birthday;
+	private String nickname;
 	private String image;
 	private String type;
 	private int authority;
 	
-	
-	public int getAuthority() {
-		return authority;
+	public String getEmail() {
+		return email;
 	}
-	public void setAuthority(int authority) {
-		this.authority = authority;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	public String getPw() {
 		return pw;
@@ -31,17 +23,11 @@ public class User {
 	public void setPw(String pw) {
 		this.pw = pw;
 	}
-	public String getGender() {
-		return gender;
+	public String getNickname() {
+		return nickname;
 	}
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-	public Date getBirthday() {
-		return birthday;
-	}
-	public void setBirthday(Date birthday) {
-		this.birthday = birthday;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 	public String getImage() {
 		return image;
@@ -55,6 +41,11 @@ public class User {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+	public int getAuthority() {
+		return authority;
+	}
+	public void setAuthority(int authority) {
+		this.authority = authority;
+	}
 	
 }

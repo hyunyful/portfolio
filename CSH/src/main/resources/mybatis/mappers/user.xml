@@ -4,23 +4,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="user">
 
-	<!-- id 중복검사 -->
-	<select id="idcheck" resultType="User" parameterType="java.lang.String">
+	<!-- email 중복검사 -->
+	<select id="emailcheck" resultType="User" parameterType="java.lang.String">
 		select *
 		from user
-		where id=#{id}
+		where email=#{email}
+	</select>
+
+	<!-- nickname 중복검사 -->
+	<select id="nicknamecheck" resultType="User" parameterType="java.lang.String">
+		select *
+		from user
+		where nickname = #{nickname}
 	</select>
 
 	<!-- 회원가입 -->
 	<insert id="join" parameterType="User">
-		insert into user(id,pw,gender,birthday,image,type,authority)
-		values(#{id},#{pw},#{gender},#{birthday},#{image},#{type},#{authority})
+		insert into user(email,pw,nickname,image,type,authority)
+		values(#{email},#{pw},#{nickname},#{image},#{type},#{authority})
 	</insert>
 	
 	<!-- 일반 회원 로그인 -->
 	<select id="login" parameterType="java.lang.String" resultType="User">
 		select *
 		from user
-		where id=#{id}
+		where email=#{email}
 	</select>
+	
+	<!-- sns 로그인 시 이미 가입한 사람인지 확인 -->
+	<select id="snsJoinCheck" parameterType="java.lang.String" resultType="User">
+		select *
+		from user
+		where email = #{email}
+	</select>
+
 </mapper>

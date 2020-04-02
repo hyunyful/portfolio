@@ -16,6 +16,13 @@
 	
 	<dependencies>
 	
+		<!-- naver -->
+		<dependency>
+			<groupId>com.github.scribejava</groupId>
+			<artifactId>scribejava-core</artifactId>
+			<version>2.8.1</version>
+		</dependency>
+	
 		<!-- MySQL 의존성 라이브러리 -->
       	<dependency>
         	<groupId>mysql</groupId>
@@ -64,7 +71,7 @@
          <artifactId>jackson-databind</artifactId>
          <version>2.10.0</version>
       </dependency>
-      
+
        <!-- 파일 업로드 처리를 위한 라이브러리 -->
       <dependency>
          <groupId>commons-fileupload</groupId>
