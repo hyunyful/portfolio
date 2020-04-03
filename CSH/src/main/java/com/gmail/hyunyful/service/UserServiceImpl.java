@@ -131,7 +131,9 @@ public class UserServiceImpl implements UserService{
 		
 		//세션에서 로그인 정보를 가진 키의 값을 삭제
 		//저장하기 전에 이미 있는 세션이 있을 수도 있으니 초기화
-		request.getSession().removeAttribute("userInfo");
+		request.getSession().removeAttribute("userEmail");
+		request.getSession().removeAttribute("userImage");
+		request.getSession().removeAttribute("userNickname");
 				
 		//데이터가 존재한다면
 		if(user != null) {
@@ -140,7 +142,9 @@ public class UserServiceImpl implements UserService{
 				//비밀번호가 일치하면 세션의 user에 사용자 정보 저장
 				//비밀번호는 제외(보안)
 				user.setPw(null);
-				request.getSession().setAttribute("userInfo", user);
+				request.getSession().setAttribute("userEmail", user.getEmail());
+				request.getSession().setAttribute("userImage", user.getImage());
+				request.getSession().setAttribute("userNickname", user.getNickname());
 				//로그인 성공시 result는 true
 				result=true;
 			}
@@ -279,10 +283,10 @@ public class UserServiceImpl implements UserService{
 				user.setNickname(nickname);			//비밀번호는 없으니까 null로 설정
 				int r = dao.join(user);
 				if(r>0) {
-					System.out.println("로그인하고 가입도 완료");
+					//System.out.println("로그인하고 가입도 완료");
 				}
 			}else {
-				System.out.println("가입 이미 되어있당");
+				//System.out.println("가입 이미 되어있당");
 			}
 			
 			session.removeAttribute("userInfo");
@@ -420,6 +424,60 @@ public class UserServiceImpl implements UserService{
 		session.setAttribute("userImage",image);
 		session.setAttribute("userNickname",nickname);
 		return b;
+	}
+	
+	//비밀번호 재설정 전 비밀번호 확인
+	@Override
+	public String pwcheck(HttpServletRequest request) {
+		String result = "";
+		
+		//email과 pw를 받아서 db에서 email로 정보를 찾아온 뒤 일치하는지 확인
+		String pw = request.getParameter("pw");
+		String email = (String) request.getSession().getAttribute("userEmail");		//email은 session거
+		User user = dao.emailcheck(email);		//유저 정보 찾아오기
+		//만약 sns로 가입한 유저면
+		if("kakao".equals(user.getType()) || "naver".equals(user.getType())){
+			//보낼 msg 설정
+			result = "sns";
+		}
+		//그렇지 않은 경우
+		else {
+			//비밀번호가 맞다면
+			if(BCrypt.checkpw(pw, user.getPw())) {
+				result = "success";
+			}
+			//비밀번호가 맞지 않으면
+			else {
+				result = "fail";
+			}
+		}
+		
+		return result;
+	}
+
+	//비밀번호 재설정
+	@Override
+	public boolean resetPw(HttpServletRequest request) {
+		boolean result = false;
+		
+		//세션에 저장된 email로 계정을 찾아서 pw를 재설정
+		String email = (String)request.getSession().getAttribute("userEmail");
+		String pw = request.getParameter("pw");
+		//비밀번호 암호화
+		pw = BCrypt.hashpw(pw, BCrypt.gensalt(10));
+		User user = new User();
+		user.setEmail(email);
+		user.setPw(pw);
+		int r = dao.resetPw(user);
+		if(r>0) {					//성공하면 r은 1
+			result = true;
+			//세션을 지워서 로그아웃 시키기		//성공한 경우에만
+			request.getSession().removeAttribute("userEmail");
+			request.getSession().removeAttribute("userNickname");
+			request.getSession().removeAttribute("userImage");
+		}
+		
+		return result;
 	}
 	
 }

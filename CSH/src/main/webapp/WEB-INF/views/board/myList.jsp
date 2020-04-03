@@ -51,18 +51,12 @@ button{
 	text-align:right;
 }
 </style>
-<script>
-function myList(email){
-	//내가 쓴 글 보는 요청 보내기
-	location.href = "/board/myList/"+email;
-}
-</script>
+
 </head>
 <body align="center">
-<h2>게시글 목록</h2>
+<h2>내가 쓴 글</h2>
 <div class="btndiv">
 	<button class="btn" onClick="location.href='/board/write'">글 작성</button>
-	<button class="btn" onClick="myList('${userEmail}')">내가 쓴 글</button>
 </div>
 <table align="center">
 	<tr>
@@ -72,11 +66,11 @@ function myList(email){
     	<th width="15%">작성일</th>
     	<th width="10%">조회수</th>
 	</tr>
-	<c:forEach var="l" items="${list}">
+	<c:forEach var="l" items="${myList}">
 	<tr>
 		<td>${l.bno}</td>
-		<td><a href="/board/detail/${l.bno}">${l.title}</a></td>		<!-- 상세보기 -->
-		<td><a href="/board/list/${l.writer}">${l.writer}</a></td>		<!-- 해당 작성자의 글 보기 -->
+		<td><a href="/board/detail/${l.bno}">${l.title}</a></td>
+		<td><a href="/board/list/${l.writer}">${l.writer}</a></td>
 		<td>${l.regdate}</td>
 		<td>${l.hit}</td>
 	</tr>

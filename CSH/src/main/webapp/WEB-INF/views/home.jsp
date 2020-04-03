@@ -111,6 +111,20 @@ window.addEventListener('load',function(){
 		다시 시도해주세요.
 	</c:if>
 	</div>
+	
+	<!-- 비밀번호 재설정 메세지 -->
+	<div style="color:orange;text-align:center;margin:0 auto">
+	<c:if test="${resetPw == true}">		<!-- 비밀번호 재설정 성공 -->
+		비밀번호가 성공적으로 재설정되었습니다.<br/>
+		변경된 비밀번호로 다시 로그인해주세요.
+	</c:if>
+	</div>
+	<div style="color:red;text-align:center;margin:0 auto">
+	<c:if test="${resetPw == false}">		<!-- 비밀번호 재설정 실패 -->
+		비밀번호 재설정에 실패하였습니다.<br/>
+		다시 시도해주세요ㅠㅠ.
+	</c:if>
+	</div>
 
 	<c:if test="${userNickname == null}">
 		<form method="post" action="/user/login">
@@ -122,14 +136,16 @@ window.addEventListener('load',function(){
 		<img src="../resources/images/kakao_login_btn.png" onClick="kakaoLogin()" width="49%" height="40px">
 		<!-- 네이버 계정으로 로그인하기 버튼 -->
 		<img src="../resources/images/naver_login_greenbtn_all.PNG" onClick="naverLogin()" width="49%" height="40px">
-		<a href="/user/join">회원가입</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/user/pw/forget">비밀번호 찾기</a>
+		<a href="/user/join">회원가입</a>
 	</c:if>
 
 	<c:if test="${userNickname != null}">
+		<%-- <img src="../resources/userimage/${userImage}" width="200px" height="200px"> --%>
 		<img src="${userImage}" width="200px" height="200px">
 		<div class="userInfo">
-			<a href="/user/mypage">${userNickname}</a>님 환영합니다!<br/><br/>
-			<a href="#">내가 쓴 글 보러가기</a><br/>
+			<a href="/user/mypage">${userNickname}</a>님 환영합니다!<br/>
+			<a href="/user/pwreset">비밀번호 재설정</a><br/><br/>
+			<a href="/board/myList/${userEmail}">내가 쓴 글 보러가기</a><br/>
 			<a href="#">오늘 날씨 보러가기</a><br/><br/>
 		</div>
 		<button type="button" onClick="location.href='/user/logout'">로그아웃</button>

@@ -114,9 +114,19 @@ public class UserController {
 		return "redirect:/";
 	}
 	
-	//비밀번호 찾기 페이지 가기
-	@RequestMapping(value="/user/pw/forget",method=RequestMethod.GET)
+	//비밀번호 재설정 페이지 가기
+	@RequestMapping(value="/user/pwreset",method=RequestMethod.GET)
 	public String pwforget() {
-		return "/user/pwforget";
+		return "/user/pwreset";
+	}
+	
+	//비밀번호 재설정하기
+	@RequestMapping(value="/user/pwreset",method=RequestMethod.POST)
+	public String pwforget(HttpServletRequest request, RedirectAttributes attr) {
+		
+		boolean result = service.resetPw(request);
+		attr.addFlashAttribute("resetPw",result);
+		
+		return "redirect:/";
 	}
 }

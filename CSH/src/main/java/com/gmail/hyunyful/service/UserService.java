@@ -36,4 +36,10 @@ public interface UserService {
 	
 	//네이버 사용자 정보 받기
 	public boolean getNaverUserInfo(String accessToken, HttpSession session);
+	
+	//비밀번호 확인 절차
+	public String pwcheck(HttpServletRequest request);
+	
+	//비밀번호 재설정
+	public boolean resetPw(HttpServletRequest request);
 }

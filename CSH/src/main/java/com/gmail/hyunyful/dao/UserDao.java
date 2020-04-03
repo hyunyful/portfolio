@@ -36,4 +36,9 @@ public class UserDao {
 	public User snsJoinCheck(String email) {
 		return sqlSession.selectOne("user.snsJoinCheck",email);
 	}
+	
+	//비밀번호 재설정
+	public int resetPw(User user) {
+		return sqlSession.update("user.resetPw",user);
+	}
 }

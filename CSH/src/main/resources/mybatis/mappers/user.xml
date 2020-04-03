@@ -38,4 +38,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where email = #{email}
 	</select>
 
+	<!-- 비밀번호 재설정 -->
+	<update id="resetPw" parameterType="User">
+		update user
+		set pw = #{pw}
+		where email = #{email}
+	</update>
 </mapper>
