@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reply">
+	<!-- 댓글 목록 -->
+	<select id="list" parameterType="java.lang.Integer" resultType="Reply">
+		select *
+		from reply
+		where bno=#{bno}
+	</select>
+	
+	<!-- 댓글 개수 -->
+	<select id="count" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select count(rno)
+		from reply
+		where bno=#{bno}
+	</select>
+	
+	<!-- 댓글 작성 -->
+	<insert id="insert" parameterType="Reply">
+		insert into reply(nickname, content, bno)
+		values(#{nickname}, #{content}, #{bno})
+	</insert>
+	
+	<!-- 댓글 수정 -->
+	<update id="update" parameterType="Reply">
+		update reply
+		set content=#{content}
+		where rno=#{rno}
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	<!-- 진짜 삭제하지는 않고 del 컬럼의 값을 1로 변경 -->
+	<update id="delete" parameterType="java.lang.Integer">
+		update reply
+		set del = 1
+		where rno=#{rno}
+	</update>
+	
+	<!-- 비밀글 설정 -->
+	<!-- secret 컬럼의 값을 1로 변경 -->
+	<update id="secret" parameterType="java.lang.Integer">
+		update reply
+		set secret = 1
+		where rno=#{rno}
+	</update>
+	
+	<!-- 좋아요 누르기 -->
+	<update id="good" parameterType="java.lang.Integer">
+		update reply
+		set good = 1
+		where rno=#{rno}
+	</update>
+	
+	<!-- 좋아요 취소 -->
+	<update id="cancelGood" parameterType="java.lang.Integer">
+		update reply
+		set good = 0
+		where rno = #{rno}
+	</update>
+	
+	<!-- 싫어요 누르기 -->
+	<update id="bad" parameterType="java.lang.Integer">
+		update reply
+		set bad = 1
+		where rno=#{rno}
+	</update>
+	
+	<!-- 싫어요 취소 -->
+	<update id="cancelBad" parameterType="java.lang.Integer">
+		update reply
+		set bad = 0
+		where rno = #{rno}
+	</update>
+	
+	<!-- 좋아요/싫어요 누른적 있는지 확인하기 -->
+	<!-- gb 테이블에서 닉네임과 rno를 조건으로 good 또는 bad의 값을 확인 -->
+	<select id="gbCheck" parameterType="Reply" resultType="Reply">
+		select *
+		from gb
+		where nickname=#{nickname} and rno=#{rno}
+	</select>
+	
+	<!-- 좋아요 누르는 경우 gb 테이블에 로그 남겨두기 -->
+	<insert id="goodLog" parameterType="Reply">
+		insert into gb(good,nickname,rno)
+		values(1, #{nickname}, #{rno})
+	</insert>
+	
+	<!-- 싫어요 누르는 경우 gb 테이블에 로그 남겨두기 -->
+	<insert id="badLog" parameterType="Reply">
+		insert into gb(bad, nickname, rno)
+		values(1, #{nickname}, #{rno})
+	</insert>
+	
+	<!-- 좋아요/싫어요 취소의 경우 로그 지우기 -->
+	<delete id="deleteLog" parameterType="Reply">
+		delete from gb
+		where nickname = #{nickname} and rno = #{rno}
+	</delete>
+	
+</mapper>

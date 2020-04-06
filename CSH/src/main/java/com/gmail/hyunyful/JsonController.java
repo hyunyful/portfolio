@@ -18,14 +18,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gmail.hyunyful.domain.Reply;
 import com.gmail.hyunyful.domain.User;
+import com.gmail.hyunyful.service.ReplyService;
 import com.gmail.hyunyful.service.UserService;
 
 @RestController
 public class JsonController {
 	
 	@Autowired
-	private UserService service;
+	private UserService userService;
 
 	//이메일 중복검사
 	//PathVariable은 파라미터 이름 없이 / 후 값만 넘어오는 경우
@@ -35,7 +37,7 @@ public class JsonController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		//System.out.println(email);
 		//service 호출
-		boolean result = service.emailcheck(email);
+		boolean result = userService.emailcheck(email);
 		map.put("result", result);
 		//System.out.println(result);
 		return map;
@@ -46,7 +48,7 @@ public class JsonController {
 	public Map<String,Object> nicknamecheck(@RequestParam("nickname") String nickname){
 		Map<String,Object> map = new HashMap<>();
 		
-		boolean result = service.nicknamecheck(nickname);
+		boolean result = userService.nicknamecheck(nickname);
 		map.put("result", result);
 		
 		return map;
@@ -61,7 +63,7 @@ public class JsonController {
 			
 		String stateToken = "";
 					
-		stateToken = service.getStateToken();
+		stateToken = userService.getStateToken();
 		//System.out.println(stateToken);
 		//map에 담아서 보내기
 		map.put("stateToken",stateToken);
@@ -77,9 +79,10 @@ public class JsonController {
 	public Map<String,Object> pwcheck(HttpServletRequest request){	
 		Map<String,Object> map = new HashMap<>();
 		
-		String msg = service.pwcheck(request);
+		String msg = userService.pwcheck(request);
 		map.put("result", msg);
 		
 		return map;
 	}
+	
 }
