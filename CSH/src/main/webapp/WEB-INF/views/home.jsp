@@ -83,7 +83,25 @@ button{
 //로딩되면 비동기로 게시판 글 가져오기
 window.addEventListener('load',function(){
 	var boarddiv = document.querySelector('.board');
-	boarddiv.innerText = "게시판 글 5개 보여질 예정";
+	
+	//비동기로 게시글 목록 요청해서 div에 뿌리기
+	$.ajax({
+		url:"/board/newest",
+		success:function(result){
+			var output = "<table align='center' style='width:100%;height:100%;background-color:WhiteSmoke;'>";
+			for(var i=0;i<result.newest.length;i++){
+				output += "<tr>";
+				output += "<th><a href='/board/detail/"+result.newest[i].bno+"'>"+result.newest[i].title+"</a></th>";
+				output += "</tr>";
+			}
+			output += "</table>";
+			
+			boarddiv.innerHTML = output;
+		},
+		error:function(e){
+			console.log(e);
+		}
+	});
 	//getBoard();	
 });
 </script>
@@ -93,14 +111,24 @@ window.addEventListener('load',function(){
 	<div class="left">		<!-- col div를 left, right로 분할 -->
 	<!-- 최신 글 보기 -->
 		<div>최신글 보기 <a href="/board/list">more</a></div>
-			<div class="board"></div>
-		</div>
+		<div class="board"></div>
+	</div>
+	
 	<div class="right">
 	<!-- 회원가입 성공 메세지 -->
 	<div style="color:orange;text-align:center;margin:0 auto">
 	<c:if test="${joinResult != null}">
 		회원가입에 성공하셨습니다.<br/>
 		로그인을 진행해주세요.
+	</c:if>
+	</div>
+
+	<div style="color:red;text-align:center;margin:0 auto">
+	<c:if test="${uri != null && userEmail == null}">
+	<script>
+		alert("해당 기능은 로그인이 필요한 서비스입니다.\n로그인 후 이용해주세요");
+	</script>
+	로그인이 필요한 서비스입니다!!
 	</c:if>
 	</div>
 
@@ -144,7 +172,9 @@ window.addEventListener('load',function(){
 		<img src="${userImage}" width="200px" height="200px">
 		<div class="userInfo">
 			<a href="/user/mypage">${userNickname}</a>님 환영합니다!<br/>
+			<c:if test="${userType == 'common'}">
 			<a href="/user/pwreset">비밀번호 재설정</a><br/><br/>
+			</c:if>
 			<a href="/board/myList/${userEmail}">내가 쓴 글 보러가기</a><br/>
 			<a href="#">오늘 날씨 보러가기</a><br/><br/>
 		</div>

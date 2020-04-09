@@ -52,4 +52,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		set title = #{title}, content = #{content}
 		where bno = #{bno}
 	</update>
+	
+	<!-- 최신글 5개 가져오기 -->
+	<!-- 삭제되지 않은 글(etc가 null)이면서 작성일자가 최신으로 정렬된 글 5개 -->
+	<select id="newest" resultType="Board">
+		select *
+		from board
+		where etc is null
+		order by regdate desc
+		limit 5
+	</select>
 </mapper>

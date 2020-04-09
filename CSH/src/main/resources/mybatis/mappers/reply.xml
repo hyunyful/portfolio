@@ -19,8 +19,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 댓글 작성 -->
 	<insert id="insert" parameterType="Reply">
-		insert into reply(nickname, content, bno)
-		values(#{nickname}, #{content}, #{bno})
+		insert into reply(nickname, content, bno, secret)
+		values(#{nickname}, #{content}, #{bno}, #{secret})
 	</insert>
 	
 	<!-- 댓글 수정 -->

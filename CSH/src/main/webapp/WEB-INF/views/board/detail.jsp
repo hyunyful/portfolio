@@ -64,7 +64,7 @@ button{
 }
 /* 댓글 입력하는 input */
 #replyContent{
-	width:85%;
+	width:30%;
 }
 /* 댓글 작성완료 버튼 */
 .replyBtn{
@@ -77,11 +77,7 @@ button{
 }
 td {
   text-align: center;
-  padding: 16px;
-}
-.replyTable{
-	align:"center";
-	width:95%;
+  padding:16px;
 }
 img{
 	width:20px;
@@ -89,6 +85,7 @@ img{
 }
 .rebtn{
 	width:25%;
+	height:8%;
 }
 </style>
 <script>
@@ -132,9 +129,10 @@ function del(bno){
 <!-- 댓글 부분 -->
 <div class="btndiv">
 	<div id="replyHead"></div>			<!-- 댓글 개수 표시 -->
-	<input type="text" id="replyContent" name="replyContent" placeholder="댓글 내용을 입력하세요" />&nbsp;&nbsp;&nbsp;
-	<button type="button" class="replyBtn" onClick="replyInsert()">작성완료</button>
-	<div id="replyDiv"></div>
+		<input type="text" id="replyContent" name="replyContent" placeholder="댓글 내용을 입력하세요" />&nbsp;&nbsp;
+		<button type="button" class="replyBtn" onClick="replyInsert()">작성완료</button>
+		<input type="checkbox" id="secretbtn"> 비밀댓글로 설정
+	<div id="replyDiv" align="center"></div>
 </div>
 
 <div class="btndiv">
@@ -161,32 +159,56 @@ function replyList(){
 	$.ajax({
 		url:"/reply/list/"+bno,
 		success:function(result){
-			//console.log("replyList()의 result ",result.replyList);
-			//댓글 내용 div에 불러온 내용 담기
-			//console.log(result.replyList[1].content);
-			var list = result.replyList;		//댓글 리스트 받기
+			var list = result.replyList;
 			var replyDiv = document.getElementById("replyDiv");		//댓글 출력할 부분
+			var len = list.length;
 			
-			var output = "<table class='replyTable' >";
-			for(var i=0;i<list.length;i++){
-				var nickname = list[i].nickname;
-				var content = list[i].content;
-				var rno = list[i].rno;
-				var l = list[i];
-				
-				output += "<tr>";
-				output += "<td>"+nickname+"</td>";
-				output += "<td><input type='text' value='"+content+"' id='t"+rno+"' readOnly /></td>";
-				output += "<td>"+l.regdate+"</td>";
-				output += "<td><img src='/resources/images/goodbtn.png' onClick='goodPress("+rno+")' />&nbsp;"+l.good;
-				output += "/&nbsp;<img src='/resources/images/badbtn.png' onClick='badPress("+rno+")' />&nbsp;"+l.bad+"</td>";
-				output += "<td><button class='rebtn' onClick='replyEdit("+rno+")' id='edit"+rno+"' >수정</button>&nbsp;&nbsp;";
-				output += "<button class='rebtn' onClick='replyDel("+rno+")' id='del"+rno+"'>삭제</button>";
-				output += "<button class='rebtn' onClick='replyEditExec("+rno+")' id='editExec"+rno+"' style='display:none' >수정완료</button>&nbsp;&nbsp;";
-				output += "<button class='rebtn' onClick='replyCancel("+rno+")' id='cancel"+rno+"' style='display:none'>취소</button></td>";
-				output += "</tr>";
+			var user = "${userNickname}";
+			var boardWriter = "${detail.writer}";
+			
+			console.log("현재 접속한 유저 "+user);
+			console.log("게시글 작성자 "+boardWriter);
+			
+			console.log(len);
+			
+			var output = '<table class="replyTable">';
+			for(var i=0;i<len;i++){
+				output += '<tr>';
+				output += '<td width="5%">'+list[i].nickname+'</td>';
+				//secret이 1인 댓글만
+				if(list[i].secret == 1){
+					//접속한 유저가 댓글을 단 유저거나 글을 작성한 유저면 content가 고대로 보이기
+					if(user == list[i].nickname || user == boardWriter){
+						console.log("조건문 통과");
+						output += '<td width="20%">';
+						output += '<img src="/resources/images/unlock.png" />';
+						output +='<input type="text" value="'+list[i].content+'" id="t'+list[i].rno+'" readOnly /></td>';
+					}
+					//아니면 비밀댓글이라고 보이게
+					else{
+						output += '<td width="20%">';
+						output += '<img src="/resources/images/lock.png" />';
+						output += '<input type="text" value="비밀 댓글 입니다" id="t'+list[i].rno+'" readOnly /></td>';
+					}
+				}
+				//secret이 1이 아니면 그냥 content 보이게
+				else{
+					output += '<td width="20%"><input type="text" value="'+list[i].content+'" id="t'+list[i].rno+'" readOnly /></td>';
+				}
+				output += '<td width="10%">'+list[i].regdate+'</td>';
+				output += '<td width="10%"><img src="/resources/images/goodbtn.png" onClick="goodPress('+list[i].rno+')" />&nbsp;'+list[i].good;
+				output += '/&nbsp;<img src="/resources/images/badbtn.png" onClick="badPress('+list[i].rno+')" />&nbsp;'+list[i].bad+'</td>';
+				//접속한 유저가 댓글을 단 유저면 수정 삭제 버튼 보이게
+				if(user == list[i].nickname){
+					console.log("두번째 조건문 통과");
+					output += '<td width="20%"><button class="rebtn" onClick="replyEdit('+list[i].rno+')" id="edit'+list[i].rno+'" >수정</button>&nbsp;&nbsp;';
+					output += '<button class="rebtn" onClick="replyDel('+list[i].rno+')" id="del'+list[i].rno+'">삭제</button>';
+					output += '<button class="rebtn" onClick="replyEditExec('+list[i].rno+')" id="editExec'+list[i].rno+'" style="display:none" >수정완료</button>&nbsp;&nbsp;';
+					output += '<button class="rebtn" onClick="replyCancel('+list[i].rno+')" id="cancel'+list[i].rno+'" style="display:none">취소</button></td>';
+				}
+				output += '</tr>';
 			}
-			output += "</table>";
+			output += '</table>';
 			
 			replyDiv.innerHTML = output;
 		},
@@ -223,10 +245,19 @@ function replyInsert(){
 	var bno = ${detail.bno};		//글번호
 	var contentplace = document.getElementById("replyContent");
 	var content = contentplace.value;
+	var check = document.getElementById("secretbtn");
+	var secret;
+	
+	if(check.checked){
+		secret = 1;
+	}else{
+		secret = 0;	
+	}
 	
 	var param = {
 			"bno":bno,
-			"content":content
+			"content":content,
+			"secret":secret
 	};
 	
 	$.ajax({
@@ -245,7 +276,7 @@ function replyInsert(){
 		error:function(e){
 			console.log(e);
 		}
-	});
+	}); 
 }
 </script>
 

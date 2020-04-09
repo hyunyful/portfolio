@@ -114,4 +114,14 @@ public class BoardServiceImpl implements BoardService {
 		return result;
 	}
 
+	//최신글 5개 가져오기
+	@Override
+	public List<Board> newest() {
+		List<Board> list = new ArrayList<>();
+		
+		list = dao.newest();
+		
+		return list;
+	}
+
 }

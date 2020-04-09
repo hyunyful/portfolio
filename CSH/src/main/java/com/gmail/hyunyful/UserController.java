@@ -54,22 +54,38 @@ public class UserController {
 			//attr에 실패 메세지를 담아서 보내기
 			attr.addFlashAttribute("loginResult",result);
 		}
-		//System.out.println("result는 "+result);
+		
+		//세션의 uri 라는 키에 저장된 uri가 있다면 그리로 리다이렉트
+		if(request.getSession().getAttribute("uri") != null) {
+			String uri = (String)request.getSession().getAttribute("uri");
+			request.getSession().removeAttribute("uri");
+			
+			return "redirect:"+ uri;
+		}
+		
 		return "redirect:/";
 	}
 	
 	//카카오 로그인
 	@RequestMapping(value="/user/kakaologin")
-	public String getCode(@RequestParam("code") String code, HttpSession session, RedirectAttributes attr) {
-		//System.out.println("받은 코드의 값은 "+code);
+	public String getCode(@RequestParam("code") String code, HttpServletRequest request, RedirectAttributes attr) {		
+		//세션 얻어오기
+		HttpSession session = request.getSession();
 		
 		//서비스의 getToken() 호출
 		String access_token = service.getToken(code);
-		//System.out.println("얻은 토큰의 값은 "+access_token);
 		
 		//서비스의 유저정보 불러오는 메소드 호출
 		boolean result = service.getKakaoUserInfo(access_token, session);
 		attr.addFlashAttribute("msg",result);
+		
+		//세션의 uri 라는 키에 저장된 uri가 있다면 그리로 리다이렉트
+		if(request.getSession().getAttribute("uri") != null) {
+			String uri = (String)request.getSession().getAttribute("uri");
+			request.getSession().removeAttribute("uri");
+			
+			return "redirect:"+ uri;
+		}
 		
 		//로그인에 성공하면 메인으로
 		return "redirect:/";
@@ -78,7 +94,10 @@ public class UserController {
 	//네이버 로그인 동의 이후 날아오는 응답
 	@RequestMapping(value="/user/naverLogin/getToken")
 	public String getNaverToken(@RequestParam("state") String state, @RequestParam("code") String code,
-												HttpSession session, RedirectAttributes attr) {
+												HttpServletRequest request, RedirectAttributes attr) {
+		//세션 가져오기
+		HttpSession session = request.getSession();
+		
 		//세션에 저장해둔 상태토큰 가져오기
 		String stateToken = (String) session.getAttribute("stateToken");
 		//System.out.println("내가 생성한 상태 토큰 "+stateToken);
@@ -93,36 +112,91 @@ public class UserController {
 			boolean result = service.getNaverUserInfo(accessToken, session);
 			attr.addFlashAttribute("msg",result);
 		}
+		
+		//세션의 uri 라는 키에 저장된 uri가 있다면 그리로 리다이렉트
+		if(request.getSession().getAttribute("uri") != null) {
+			String uri = (String)request.getSession().getAttribute("uri");
+			request.getSession().removeAttribute("uri");
+			
+			return "redirect:"+ uri;
+		}
+		
 		return "redirect:/";
 	}
 	
 	//마이페이지 가는 요청
 	@RequestMapping(value="/user/mypage")
-	public String mypage() {
+	public String mypage(HttpServletRequest request) {
+		//로그인이 안되어 있으면
+		if(request.getSession().getAttribute("userEmail") == null) {
+			//현재의 uri를 세션에 저장(/board/wirte)
+			//request.getRequestURI() 는 포트번호 이후의 경로를 반환 (String 형) ex./board/write
+			//request.getRequestURL() 은 http부터 끝까지의 경로를 반환 (StringBuffer 형) ex.http://localhost:8080/board/write 
+			String uri = request.getRequestURI();
+			request.getSession().setAttribute("uri",uri); 
+			//로그인 페이지가 없으므로 메인페이지로 리다이렉트
+			return "redirect:/";
+		}
+		
 		return "/user/mypage";
 	}
 	
 	//로그아웃 요청
 	@RequestMapping(value="/user/logout",method=RequestMethod.GET)
-	public String logout(HttpSession session) {
+	public String logout(HttpServletRequest request) {
+		//로그인이 안되어 있으면
+		if(request.getSession().getAttribute("userEmail") == null) {
+			//현재의 uri를 세션에 저장(/board/wirte)
+			//request.getRequestURI() 는 포트번호 이후의 경로를 반환 (String 형) ex./board/write
+			//request.getRequestURL() 은 http부터 끝까지의 경로를 반환 (StringBuffer 형) ex.http://localhost:8080/board/write 
+			String uri = request.getRequestURI();
+			request.getSession().setAttribute("uri",uri); 
+			//로그인 페이지가 없으므로 메인페이지로 리다이렉트
+			return "redirect:/";
+		}
+		
+		//세션 가져오기
+		HttpSession session = request.getSession();
 		
 		//세션에서 userInfo 지우기
 		session.removeAttribute("userNickname");
 		session.removeAttribute("userImage");
 		session.removeAttribute("userEmail");
+		session.removeAttribute("userType");
 		
 		return "redirect:/";
 	}
 	
 	//비밀번호 재설정 페이지 가기
 	@RequestMapping(value="/user/pwreset",method=RequestMethod.GET)
-	public String pwforget() {
+	public String pwforget(HttpServletRequest request) {
+		//로그인이 안되어 있으면
+		if(request.getSession().getAttribute("userEmail") == null) {
+			//현재의 uri를 세션에 저장(/board/wirte)
+			//request.getRequestURI() 는 포트번호 이후의 경로를 반환 (String 형) ex./board/write
+			//request.getRequestURL() 은 http부터 끝까지의 경로를 반환 (StringBuffer 형) ex.http://localhost:8080/board/write 
+			String uri = request.getRequestURI();
+			request.getSession().setAttribute("uri",uri); 
+			//로그인 페이지가 없으므로 메인페이지로 리다이렉트
+			return "redirect:/";
+		}
+		
 		return "/user/pwreset";
 	}
 	
 	//비밀번호 재설정하기
 	@RequestMapping(value="/user/pwreset",method=RequestMethod.POST)
 	public String pwforget(HttpServletRequest request, RedirectAttributes attr) {
+		//로그인이 안되어 있으면
+		if(request.getSession().getAttribute("userEmail") == null) {
+			//현재의 uri를 세션에 저장(/board/wirte)
+			//request.getRequestURI() 는 포트번호 이후의 경로를 반환 (String 형) ex./board/write
+			//request.getRequestURL() 은 http부터 끝까지의 경로를 반환 (StringBuffer 형) ex.http://localhost:8080/board/write 
+			String uri = request.getRequestURI();
+			request.getSession().setAttribute("uri",uri); 
+			//로그인 페이지가 없으므로 메인페이지로 리다이렉트
+			return "redirect:/";
+		}
 		
 		boolean result = service.resetPw(request);
 		attr.addFlashAttribute("resetPw",result);

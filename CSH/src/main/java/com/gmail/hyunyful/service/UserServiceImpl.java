@@ -79,23 +79,27 @@ public class UserServiceImpl implements UserService{
 		
 		//파일 처리
 		MultipartFile f=request.getFile("image");			//file 파라미터 값 가져오기
-		String filename=e+"image";							//id+image로 유일무이한 이름 만들기
 		//저장할 디렉토리 이름 만들기
 		//프로젝트 내에 만드는게 좋음
 		//실행하기 전에 프로젝트 내의 webapp(WebContent)/memberimage 디렉토리를 만들어야 함
-		String path=request.getServletContext().getRealPath("/resources/userimage");
-		System.out.println("file path는 "+path);
+		//filePath는 실제 파일 자체가 저장될 위치
+		//dbPath는 db에 저장될 파일 경로		//꺼낼 때 엑박이 뜨지 않기 위해서 ../resources/userimage 로 설정
+		String filePath=request.getSession().getServletContext().getRealPath("/resources/userimage");
+		String dbPath = "../resources/userimage";
+		String filename=e+"image";							//id+image로 유일무이한 이름 만들기
 		//업로드 하는 파일이 있으면 저장하고 그렇지 않으면 default.png 저장
 		if(f.getOriginalFilename().length() > 0) {
 			//파일 업로드
-			File file=new File(path+"/"+filename);
+			File file=new File(filePath+"/"+filename);
+			//db에 저장할 filename 변경
+			filename = dbPath+"/"+filename;
 			try {
 				f.transferTo(file);
 			}catch(Exception e1) {
 				e1.printStackTrace();
 			}
 		}else {
-			filename="default.png";
+			filename=dbPath+"/default.png";
 		}
 		
 		//비밀번호 암호화
@@ -134,6 +138,7 @@ public class UserServiceImpl implements UserService{
 		request.getSession().removeAttribute("userEmail");
 		request.getSession().removeAttribute("userImage");
 		request.getSession().removeAttribute("userNickname");
+		request.getSession().removeAttribute("userType");
 				
 		//데이터가 존재한다면
 		if(user != null) {
@@ -145,6 +150,7 @@ public class UserServiceImpl implements UserService{
 				request.getSession().setAttribute("userEmail", user.getEmail());
 				request.getSession().setAttribute("userImage", user.getImage());
 				request.getSession().setAttribute("userNickname", user.getNickname());
+				request.getSession().setAttribute("userType", user.getType());
 				//로그인 성공시 result는 true
 				result=true;
 			}
@@ -227,6 +233,7 @@ public class UserServiceImpl implements UserService{
 		String email = "";
 		String image = "";
 		String nickname = "";
+		User user = new User();
 		
 		//기본 요청 주소
 		String requestURI = "https://kapi.kakao.com/v2/user/me";	
@@ -275,7 +282,6 @@ public class UserServiceImpl implements UserService{
 			User u = dao.snsJoinCheck(email);
 			//없으면 가입 진행
 			if(u == null) {
-				User user = new User();
 				user.setEmail(email);
 				user.setType("kakao");
 				user.setAuthority(1);
@@ -288,9 +294,6 @@ public class UserServiceImpl implements UserService{
 			}else {
 				//System.out.println("가입 이미 되어있당");
 			}
-			
-			session.removeAttribute("userInfo");
-			session.setAttribute("userInfo",data);
 			br.close();
 		} catch (Exception e) {
 			b = false;
@@ -301,9 +304,13 @@ public class UserServiceImpl implements UserService{
 		session.removeAttribute("userEmail");
 		session.removeAttribute("userImage");
 		session.removeAttribute("userNickname");
+		session.removeAttribute("userType");
+		
 		session.setAttribute("userEmail",email);
 		session.setAttribute("userImage",image);
 		session.setAttribute("userNickname",nickname);
+		session.setAttribute("userType", user.getType());
+		
 		return b;
 	}
 
@@ -366,6 +373,7 @@ public class UserServiceImpl implements UserService{
 		String email = "";
 		String image = "";
 		String nickname = "";
+		User user = new User();
 		
 		String uri = "https://openapi.naver.com/v1/nid/me";
 		
@@ -396,8 +404,6 @@ public class UserServiceImpl implements UserService{
 			User u = dao.snsJoinCheck(email);
 			//가입 안되어 있으면
 			if(u == null) {
-				System.out.println("가입 안되어있어서 가입한당");
-				User user = new User();
 				user.setEmail(email);
 				user.setImage(image);
 				user.setNickname(nickname);
@@ -420,9 +426,13 @@ public class UserServiceImpl implements UserService{
 		session.removeAttribute("userEmail");
 		session.removeAttribute("userImage");
 		session.removeAttribute("userNickname");
+		session.removeAttribute("userType");
+		
 		session.setAttribute("userEmail",email);
 		session.setAttribute("userImage",image);
 		session.setAttribute("userNickname",nickname);
+		session.setAttribute("userType", user.getType());
+		
 		return b;
 	}
 	

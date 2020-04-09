@@ -59,11 +59,13 @@ public class ReplyServiceImpl implements ReplyService {
 		String nickname = (String)request.getSession().getAttribute("userNickname");			//닉네임은 세션에서 가져오기
 		String content = request.getParameter("content");
 		int bno = Integer.parseInt(request.getParameter("bno"));
+		int secret = Integer.parseInt(request.getParameter("secret"));
 		
 		Reply reply = new Reply();
 		reply.setBno(bno);
 		reply.setContent(content);
 		reply.setNickname(nickname);
+		reply.setSecret(secret);
 		
 		int r = dao.insert(reply);
 		if(r>0) {

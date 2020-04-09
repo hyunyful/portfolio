@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gmail.hyunyful.domain.Board;
 import com.gmail.hyunyful.domain.Reply;
 import com.gmail.hyunyful.domain.User;
+import com.gmail.hyunyful.service.BoardService;
 import com.gmail.hyunyful.service.ReplyService;
 import com.gmail.hyunyful.service.UserService;
 
@@ -85,4 +87,17 @@ public class JsonController {
 		return map;
 	}
 	
+	@Autowired
+	private BoardService boardService;
+	
+	//최신글 5개 건네주기
+	@RequestMapping(value="/board/newest")
+	public Map<String,Object> newest(){
+		Map<String,Object> map = new HashMap<>();
+		
+		List<Board> list = boardService.newest();
+		map.put("newest", list);
+		
+		return map;
+	}
 }

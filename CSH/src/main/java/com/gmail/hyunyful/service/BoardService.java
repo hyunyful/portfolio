@@ -28,4 +28,7 @@ public interface BoardService {
 	
 	//게시글 수정
 	public boolean update(HttpServletRequest request);
+	
+	//최신글 5개 가져오기
+	public List<Board> newest();
 }

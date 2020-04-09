@@ -48,4 +48,9 @@ public class BoardDao {
 	public int update(Board board) {
 		return sqlSession.update("board.update",board);
 	}
+	
+	//최신글 5개 가져오기
+	public List<Board> newest(){
+		return sqlSession.selectList("board.newest");
+	}
 }
